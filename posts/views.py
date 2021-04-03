@@ -18,13 +18,20 @@ def page_paginator(request, post_list):
 
 def index(request):
     post_list = Post.objects.all()
-    return render(request, 'index.html', {'page': page_paginator(request, post_list)})
+    return render(request,
+                  'index.html',
+                  {'page': page_paginator(request, post_list)}
+                  )
 
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     post_list = group.posts.all()
-    return render(request, 'group.html', {"group": group, "page": page_paginator(request, post_list)})
+    return render(request,
+                  'group.html',
+                  {"group": group,
+                   "page": page_paginator(request, post_list)}
+                  )
 
 
 @login_required
