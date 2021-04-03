@@ -48,8 +48,8 @@ def new_post(request):
 def profile(request, username):
     author = User.objects.get(username=username)
     edit = author == request.user
-    post_list = author.posts.all()
-    post_count = author.post.count()
+    post_list = Post.objects.filter(author=author)
+    post_count = post_list.count()
     context = {'post_count': post_count,
                'author': author,
                'page': page_paginator(request, post_list),
