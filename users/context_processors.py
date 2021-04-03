@@ -1,11 +1,10 @@
 import datetime as dt
 
 
-def year(request):
+def year():
     """
     Добавляет переменную с текущим годом.
     """
     return {
         "year": dt.datetime.today().year
     }
-

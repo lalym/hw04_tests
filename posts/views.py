@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib.auth import get_user_model
 
-
 from .forms import PostForm
 from .models import Post, Group
 
@@ -38,6 +37,7 @@ def new_post(request):
         return redirect('posts:index')
     return render(request, 'new.html', {'form': form})
 
+
 def profile(request, username):
     author = User.objects.get(username=username)
     edit = author == request.user
@@ -61,6 +61,7 @@ def post_view(request, username, post_id):
                'author': author,
                'edit': edit}
     return render(request, 'post.html', context)
+
 
 @login_required
 def post_edit(request, username, post_id):

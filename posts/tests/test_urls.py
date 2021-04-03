@@ -20,7 +20,7 @@ class PostsURLTests(TestCase):
         cls.templates_url_names = {
             'index.html': reverse('posts:index'),
             'group.html': reverse('posts:group_posts',
-                                        kwargs={'slug': cls.group.slug}),
+                                  kwargs={'slug': cls.group.slug}),
             'new.html': reverse('posts:new_post'),
             'profile.html': reverse(
                 'posts:profile',
@@ -76,7 +76,7 @@ class PostsURLTests(TestCase):
                 if reverse_name == reverse(
                         'posts:post_edit',
                         kwargs={'username': self.author.username,
-                                'post_id': self.post.id},):
+                                'post_id': self.post.id}, ):
                     response = self.no_author_client.get(reverse_name)
                     self.assertEqual(response.status_code, 302)
                 else:

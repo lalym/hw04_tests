@@ -23,5 +23,3 @@ urlpatterns = [
     path("", include("posts.urls")),
     path('about/', include('about.urls', namespace='about'))
 ]
-
-

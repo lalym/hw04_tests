@@ -2,7 +2,6 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 
-
 class AboutURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -26,5 +25,3 @@ class AboutURLTests(TestCase):
             with self.subTest():
                 response = self.guest_client.get(reverse(reverse_name))
                 self.assertTemplateUsed(response, template)
-
-
