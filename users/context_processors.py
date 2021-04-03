@@ -1,7 +1,7 @@
 import datetime as dt
 
 
-def year():
+def year(request):
     """
     Добавляет переменную с текущим годом.
     """
