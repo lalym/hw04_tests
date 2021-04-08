@@ -1,10 +1,10 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import PostForm
-from .models import Post, Group
+from .models import Group, Post
 
 User = get_user_model()
 
@@ -29,15 +29,15 @@ def group_posts(request, slug):
     post_list = group.posts.all()
     return render(request,
                   'group.html',
-                  {"group": group,
-                   "page": page_paginator(request, post_list)}
+                  {'group': group,
+                   'page': page_paginator(request, post_list)}
                   )
 
 
 @login_required
 def new_post(request):
     form = PostForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
+    if form.is_valid():
         post = form.save(commit=False)
         post.author = request.user
         post.save()
@@ -46,9 +46,9 @@ def new_post(request):
 
 
 def profile(request, username):
-    author = User.objects.get(username=username)
+    author = get_object_or_404(User, username=username)
     edit = author == request.user
-    post_list = Post.objects.filter(author=author)
+    post_list = author.posts.all()
     post_count = post_list.count()
     context = {'post_count': post_count,
                'author': author,
@@ -58,10 +58,10 @@ def profile(request, username):
 
 
 def post_view(request, username, post_id):
-    author = User.objects.get(username=username)
+    author = get_object_or_404(User, username=username)
     edit = author == request.user
     post_count = author.posts.count()
-    post = Post.objects.get(id=post_id)
+    post = get_object_or_404(Post, author__username=username, id=post_id)
 
     context = {'post_count': post_count,
                'post': post,
@@ -71,23 +71,54 @@ def post_view(request, username, post_id):
 
 
 @login_required
+# def post_edit(request, username, post_id):
+#     # user = get_object_or_404(User, username=username)
+#     post = get_object_or_404(Post, author__username=username, id=post_id)
+#
+#     if request.user != post.author:
+#         # return redirect('posts:post', username, post_id)
+#         return redirect('posts:post', post_id=post.id, username=post.author.username)
+#     # form = PostForm(request.POST or None, instance=post)
+#     form = PostForm(request.POST or None, instance=post)
+#
+#     # if request.method == 'POST' and form.is_valid():
+#     #     post = Post.objects.get(id=post_id)
+#     #     form = PostForm(request.POST, instance=post)
+#     #     form.save()
+#     #     return redirect('posts:post', username, post_id)
+#     if form.is_valid():
+#         form.save()
+#         return redirect('posts:post', post_id=post.id, username=post.author.username)
+#
+#     return render(request, 'new.html', {'form': form, 'edit': True})
+#     # if request.method == 'GET':
+#     #     post = get_object_or_404(Post, author__username=username, id=post_id)
+#     #     form = PostForm({'text': post.text, 'group': post.group_id})
+#     #     return render(request, 'new.html',
+#     #                   {'form': form,
+#     #                    'edit': True})
+#     #
+#     # if request.method == 'POST':
+#     #     form = PostForm(request.POST)
+#
+#     # if form.is_valid():
+#     #     post = Post.objects.get(id=post_id)
+#     #     form = PostForm(request.POST, instance=post)
+#     #     form.save()
+#     #     return redirect('posts:post', username, post_id)
+#     #
+#     # return render(request, 'new.html', {'form': form, 'edit': True})
+
 def post_edit(request, username, post_id):
-    user = User.objects.get(username=username)
+    post = get_object_or_404(Post, author__username=username, id=post_id)
+    if request.user != post.author:
+        return redirect('posts:post', post_id=post.id, username=post.author.username)
 
-    if request.user != user:
-        return redirect('posts:post', username, post_id)
-
-    if request.method == 'GET':
-        post = get_object_or_404(Post, id=post_id)
-        form = PostForm({'text': post.text, 'group': post.group_id})
-        return render(request, 'new.html',
-                      {'form': form,
-                       'edit': True})
+    form = PostForm(request.POST or None, instance=post)
 
     if request.method == 'POST':
-        form = PostForm(request.POST)
         if form.is_valid():
-            post = Post.objects.get(id=post_id)
-            form = PostForm(request.POST, instance=post)
             form.save()
-            return redirect('posts:post', username, post_id)
+            return redirect('posts:post', username=request.user.username, post_id=post_id)
+
+    return render(request, 'new.html', {'form': form, 'edit': True})

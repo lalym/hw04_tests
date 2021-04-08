@@ -1,6 +1,6 @@
+from django import forms
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
-from django import forms
 from django.urls import reverse
 
 from posts.models import Group, Post
@@ -46,7 +46,7 @@ class PostPagesTests(TestCase):
         При создании поста с указанием группы,
         этот пост появляется на главной странице сайта.
         """
-        response = self.authorized_client.get('/')
+        response = self.authorized_client.get(reverse('posts:index'))
         last_post = response.context['page'][0]
         self.assertEqual(last_post, self.post)
 
@@ -56,7 +56,8 @@ class PostPagesTests(TestCase):
         При создании поста с указанием группы,
         этот пост появляется на странице этой группы.
         """
-        response = self.authorized_client.get('/group/test-slug/')
+        response = self.authorized_client.get(reverse('posts:group_posts',
+                                  kwargs={'slug': 'test-slug'}))
         test_group = response.context['group']
         test_post = response.context['page'][0].__str__()
         self.assertEqual(test_group, self.group)
@@ -64,7 +65,7 @@ class PostPagesTests(TestCase):
 
     def test_context_in_template_new_post(self):
         """Шаблон new сформирован с правильным контекстом."""
-        response = self.authorized_client.get('/new/')
+        response = self.authorized_client.get(reverse('posts:new_post'))
 
         form_fields = {'group': forms.fields.ChoiceField,
                        'text': forms.fields.CharField}
@@ -77,14 +78,19 @@ class PostPagesTests(TestCase):
     def test_context_in_post_edit_template(self):
         """Шаблон редактирования поста сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse('posts:post_edit',
-                    kwargs={'username': self.user.username,
-                            'post_id': self.post.id}),
-        )
-        self.assertEqual(response.context['form'].cleaned_data['text'],
-                         self.post.text)
-        self.assertEqual(response.context['form'].cleaned_data['group'],
-                         self.post.group)
+                reverse('posts:post_edit',
+                        kwargs={'username': self.user.username,
+                                'post_id': self.post.id}),
+            )
+
+        form_fields = {
+            'text': forms.fields.CharField,
+        }
+
+        for value, expected in form_fields.items():
+            with self.subTest(value=value):
+                form_field = response.context.get('form').fields.get(value)
+                self.assertIsInstance(form_field, expected)
 
     def test_context_in_template_profile(self):
         """Шаблон profile сформирован с правильным контекстом."""
@@ -120,7 +126,7 @@ class PostPagesTests(TestCase):
         При создании поста с указанием группы,
         этот пост НЕ попал в группу, для которой не был предназначен.
         """
-        response = self.authorized_client.get('/')
+        response = self.authorized_client.get(reverse('posts:index'))
         post = response.context['page'][0]
         group = post.group
         self.assertEqual(group, self.group)

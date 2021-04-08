@@ -4,12 +4,11 @@
 {% block content %}
     {% for post in page %}
     <h3>
-        Автор: <a href="/{{ post.author.username }}/">{{ post.author.get_full_name }}</a>, Дата публикации: {{ post.pub_date|date:"d M Y" }}
-    {% if post.group %}<small>Группа: <a href="/group/{{ post.group.slug }}/">{{ post.group }}</a></small>{% endif %}
+    Автор: <a href="{% url 'posts:profile' post.author.username %}">{{ post.author.get_full_name }}</a>, Дата публикации: {{ post.pub_date|date:"d M Y" }}
+    {% if post.group %}<small>Группа: <a href="{% url 'posts:group_posts' post.group.slug %}">{{ post.group }}</a></small>{% endif %}
     </h3>
     <p>{{ post.text|linebreaksbr }}</p>
     {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
-    {% include "paginator.html" %}
-{% include "footer.html" %}
+    {% include "includes/paginator.html" %}
 {% endblock %}

@@ -11,9 +11,3 @@ class PostForm(forms.ModelForm):
         widgets = {'text': Textarea(attrs={'placeholder': 'Введите текст'})}
         error_messages = {'text': {'required': 'Пост обязательно должен '
                                                'содержать текст!'}}
-
-    def clean_text(self):
-        data = self.cleaned_data['text']
-        if data == '':
-            raise forms.ValidationError('Пост не должен быть пустым!')
-        return data

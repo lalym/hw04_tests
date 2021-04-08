@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+
 from posts.models import Group, Post
 
 User = get_user_model()
@@ -21,10 +22,10 @@ class PostModelTest(TestCase):
         """verbose_name в полях Post совпадает с ожидаемым"""
         post = PostModelTest.post
         field_verboses = {
-            "text": "Текст",
-            "pub_date": "Дата публикации",
-            "author": "Автор",
-            "group": "Группа",
+            'text': 'Текст',
+            'pub_date': 'Дата публикации',
+            'author': 'Автор',
+            'group': 'Группа',
         }
         for value, expected in field_verboses.items():
             with self.subTest(value=value):
@@ -35,8 +36,8 @@ class PostModelTest(TestCase):
         """verbose_name в полях Group совпадает с ожидаемым"""
         group = PostModelTest.group
         field_verboses = {
-            "title": "Наименование группы",
-            "description": "Описание группы",
+            'title': 'Наименование группы',
+            'description': 'Описание группы',
         }
         for value, expected in field_verboses.items():
             with self.subTest(value=value):
@@ -47,10 +48,10 @@ class PostModelTest(TestCase):
         """help_texts в полях Post совпадает с ожидаемым"""
         post = PostModelTest.post
         help_texts = {
-            "text": "Здесь напишите текст публикации",
-            "pub_date": "Укажите дату публикации",
-            "author": "Укажите автора публикации",
-            "group": "Укажите группу для публикации",
+            'text': 'Здесь напишите текст публикации',
+            'pub_date': 'Укажите дату публикации',
+            'author': 'Укажите автора публикации',
+            'group': 'Укажите группу для публикации',
         }
         for value, expected in help_texts.items():
             with self.subTest(value=value):
@@ -61,8 +62,8 @@ class PostModelTest(TestCase):
         """help_texts в полях Group совпадает с ожидаемым"""
         group = PostModelTest.group
         help_texts = {
-            "title": "Укажите наименование группы",
-            "description": "Уточните описание группы",
+            'title': 'Укажите наименование группы',
+            'description': 'Уточните описание группы',
         }
         for value, expected in help_texts.items():
             with self.subTest(value=value):
