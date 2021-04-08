@@ -56,8 +56,9 @@ class PostPagesTests(TestCase):
         При создании поста с указанием группы,
         этот пост появляется на странице этой группы.
         """
-        response = self.authorized_client.get(reverse('posts:group_posts',
-                                  kwargs={'slug': 'test-slug'}))
+        response = self.authorized_client.get \
+            (reverse('posts:group_posts',
+                     kwargs={'slug': 'test-slug'}))
         test_group = response.context['group']
         test_post = response.context['page'][0].__str__()
         self.assertEqual(test_group, self.group)
@@ -78,10 +79,10 @@ class PostPagesTests(TestCase):
     def test_context_in_post_edit_template(self):
         """Шаблон редактирования поста сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-                reverse('posts:post_edit',
-                        kwargs={'username': self.user.username,
-                                'post_id': self.post.id}),
-            )
+            reverse('posts:post_edit',
+                    kwargs={'username': self.user.username,
+                            'post_id': self.post.id}),
+        )
 
         form_fields = {
             'text': forms.fields.CharField,

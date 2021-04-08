@@ -12,7 +12,7 @@ class PostFormTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.author = User.objects.create_user(username='TestUser')
-        cls.group= Group.objects.create(
+        cls.group = Group.objects.create(
             title='Тестовое название группы',
             slug='test_slug',
             description='Тестовое описание группы'
