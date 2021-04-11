@@ -48,7 +48,9 @@ class PostFormTests(TestCase):
             data=form_data
         )
         response = self.authorized_client.get(
-            f'/{self.author.username}/{self.post.id}/',
+            reverse('posts:post',
+                    kwargs={'username': self.author.username,
+                            'post_id': self.post.id})
         )
         self.assertEqual(response.context['post'].text, 'Новый текст')
         self.assertTrue(Post.objects.filter(

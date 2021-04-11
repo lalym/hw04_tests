@@ -58,7 +58,7 @@ class PostPagesTests(TestCase):
         """
         response = self.authorized_client.get(reverse
                                               ('posts:group_posts',
-                                               kwargs={'slug': 'test-slug'}))
+                                               kwargs={'slug': self.group.slug}))
         test_group = response.context['group']
         test_post = response.context['page'][0].__str__()
         self.assertEqual(test_group, self.group)
@@ -95,7 +95,10 @@ class PostPagesTests(TestCase):
 
     def test_context_in_template_profile(self):
         """Шаблон profile сформирован с правильным контекстом."""
-        response = self.authorized_client.get(f'/{self.user.username}/')
+        response = self.authorized_client.get(
+            reverse('posts:profile',
+                    kwargs={'username': self.user.username})
+        )
         profile = {'post_count': self.user.posts.count(),
                    'author': self.post.author}
 
@@ -110,7 +113,9 @@ class PostPagesTests(TestCase):
     def test_context_in_template_post(self):
         """Шаблон post сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            f'/{self.user.username}/{self.post.id}/'
+            reverse('posts:post',
+                    kwargs={'username': self.user.username,
+                            'post_id': self.post.id})
         )
 
         profile = {'post_count': self.user.posts.count(),
@@ -145,11 +150,11 @@ class PaginatorViewsTest(TestCase):
                 text=f'Тестовый пост номер {count}',
                 author=cls.user)
 
-    def test_first_page_containse_ten_records(self):
+    def test_first_page_contains_ten_records(self):
         response = self.authorized_client.get(reverse('posts:index'))
         self.assertEqual(len(response.context.get('page').object_list), 10)
 
-    def test_second_page_containse_three_records(self):
+    def test_second_page_contains_three_records(self):
         response = self.authorized_client.get(
             reverse('posts:index') + '?page=2'
         )

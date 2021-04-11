@@ -58,10 +58,10 @@ def profile(request, username):
 
 
 def post_view(request, username, post_id):
-    author = get_object_or_404(User, username=username)
+    post = get_object_or_404(Post, author__username=username, id=post_id)
+    author = post.author
     edit = author == request.user
     post_count = author.posts.count()
-    post = get_object_or_404(Post, author__username=username, id=post_id)
 
     context = {'post_count': post_count,
                'post': post,
@@ -80,11 +80,10 @@ def post_edit(request, username, post_id):
 
     form = PostForm(request.POST or None, instance=post)
 
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            return redirect('posts:post',
-                            username=request.user.username,
-                            post_id=post_id)
+    if form.is_valid():
+        form.save()
+        return redirect('posts:post',
+                        username=request.user.username,
+                        post_id=post_id)
 
     return render(request, 'new.html', {'form': form, 'edit': True})
