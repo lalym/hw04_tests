@@ -56,9 +56,9 @@ class PostPagesTests(TestCase):
         При создании поста с указанием группы,
         этот пост появляется на странице этой группы.
         """
-        response = self.authorized_client.get(reverse
-                                              ('posts:group_posts',
-                                               kwargs={'slug': self.group.slug}))
+        response = self.authorized_client.get(
+            reverse('posts:group_posts',
+                    kwargs={'slug': self.group.slug}))
         test_group = response.context['group']
         test_post = response.context['page'][0].__str__()
         self.assertEqual(test_group, self.group)
