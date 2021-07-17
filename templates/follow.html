@@ -6,7 +6,7 @@
     {% load cache %}
     {% cache 20 index_page page %}
            <h1> Последние обновления на сайте</h1>
-        {% include "includes/menu.html" with index=True %}
+        {% include "includes/menu.html" with follow=True %}
             <!-- Вывод ленты записей -->
                 {% for post in page %}
                   <!-- Вот он, новый include! -->

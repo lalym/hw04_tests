@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 new_venv
+media
 .Python
 build/
 develop-eggs/
