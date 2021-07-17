@@ -1,23 +1,14 @@
 {% extends "base.html" %}
-{% block title %} Последние обновления {% endblock %}
-
+{% block title %}Последние обновления на сайте{% endblock %}
+{% block header %}Последние обновления на сайте{% endblock %}
 {% block content %}
-    <div class="container">
-    {% load cache %}
-    {% cache 20 index_page page %}
-           <h1> Последние обновления на сайте</h1>
-        {% include "includes/menu.html" with index=True %}
-            <!-- Вывод ленты записей -->
-                {% for post in page %}
-                  <!-- Вот он, новый include! -->
-                    {% include "includes/post_item.html" with post=post %}
-                {% endfor %}
-    </div>
-
-        <!-- Вывод паджинатора -->
-        {% if page.has_other_pages %}
-            {% include "includes/paginator.html" with items=page paginator=paginator%}
-        {% endif %}
-    {% endcache %}
-
+    {% for post in page %}
+    <h3>
+    Автор: <a href="{% url 'posts:profile' post.author.username %}">{{ post.author.get_full_name }}</a>, Дата публикации: {{ post.pub_date|date:"d M Y" }}
+    {% if post.group %}<small>Группа: <a href="{% url 'posts:group_posts' post.group.slug %}">{{ post.group }}</a></small>{% endif %}
+    </h3>
+    <p>{{ post.text|linebreaksbr }}</p>
+    {% if not forloop.last %}<hr>{% endif %}
+    {% endfor %}
+    {% include "includes/paginator.html" %}
 {% endblock %}

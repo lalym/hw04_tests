@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -87,7 +86,6 @@ class PostsURLTests(TestCase):
 
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
-        cache.clear()
         for template, reverse_name in self.templates_url_names.items():
             with self.subTest():
                 response = self.authorized_client.get(reverse_name)
